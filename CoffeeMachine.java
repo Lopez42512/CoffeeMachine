@@ -1,49 +1,111 @@
 import java.util.Scanner;
 
 public class CoffeeMachine {
-    public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);
+    static Scanner scan = new Scanner(System.in);
+    // Amount of ingredients inside coffee machine
+    static int waterInCoffeeMachine = 400; // Amount in ml
+    static int milkInCoffeeMachine = 540; // Amount in ml
+    static int coffeeBeanInCoffeeMachine = 120; // Amount in grams
+    static int disposableCups = 9;
+    static int moneyInRegister = 550;
+    static boolean serviceInProgress = true;
 
-        // Amount of ingredients need for a cup of coffee
-        int waterForOneCupOfCoffee = 200; // Amount in ml
-        int milkForOneCupOfCoffee = 50; // Amount in ml
-        int coffeeBeanForOneCupOfCoffee = 15; // Amount in grams
+    static void printResources() {
+        System.out.println(waterInCoffeeMachine + " of water");
+        System.out.println(milkInCoffeeMachine + " of milk");
+        System.out.println(coffeeBeanInCoffeeMachine + " of coffee beans");
+        System.out.println(disposableCups + " of disposable cups");
+        System.out.println(moneyInRegister + " of money");
+    }
 
-        // Getting inital amount of ingredients in coffee machine
-        System.out.println("Write how many ml of water the coffee machine has:");
-        int waterInCoffeeMachine = scan.nextInt();
-        System.out.println("Write how many ml of milk the coffee machine has:");
-        int milkInCoffeeMachine = scan.nextInt();
-        System.out.println("Write how many grams of coffee beans the coffee machine has:");
-        int coffeeBeansInCoffeeMachine = scan.nextInt();
-
-        // How many cups of coffee ordered
-        System.out.println("Write how many cups of coffee you will need:");
-        int cupsOfCoffeeOrdered = scan.nextInt();
-
-        // Determine how many cups of coffee the machine can make with the ingredients
-        // it has
-        int howManyCoffeeCupsWeCanMakeFromWater = waterInCoffeeMachine / waterForOneCupOfCoffee;
-        int howManyCoffeeCupsWeCanMakeFromMilk = milkInCoffeeMachine / milkForOneCupOfCoffee;
-        int howManyCoffeeCupsWeCanMakeFromCoffeeBeans = coffeeBeansInCoffeeMachine / coffeeBeanForOneCupOfCoffee;
-
-        int howManyCupsCanBeMade = howManyCoffeeCupsWeCanMakeFromWater < howManyCoffeeCupsWeCanMakeFromMilk
-                ? howManyCoffeeCupsWeCanMakeFromWater < howManyCoffeeCupsWeCanMakeFromCoffeeBeans
-                        ? howManyCoffeeCupsWeCanMakeFromWater
-                        : howManyCoffeeCupsWeCanMakeFromCoffeeBeans
-                : howManyCoffeeCupsWeCanMakeFromMilk < howManyCoffeeCupsWeCanMakeFromCoffeeBeans
-                        ? howManyCoffeeCupsWeCanMakeFromMilk
-                        : howManyCoffeeCupsWeCanMakeFromCoffeeBeans;
-
-        if (howManyCupsCanBeMade == cupsOfCoffeeOrdered) {
-            System.out.println("Yes, I can make that amount of coffee");
-        } else if (howManyCupsCanBeMade > cupsOfCoffeeOrdered) {
-            int cupsLeftedOver = howManyCupsCanBeMade - cupsOfCoffeeOrdered;
-            System.out.println("Yes, I can make that amount of coffee (and even "  + cupsLeftedOver + " more than that)");
-        } else {
-            System.out.println("No, I can make only" + howManyCupsCanBeMade + "cup(s) of coffee");
+    static void buy(String i) {
+        switch (i) {
+            case "1":
+                if (waterInCoffeeMachine < 250 || coffeeBeanInCoffeeMachine < 16 || disposableCups < 1) {
+                    System.out.println("We are out of that coffee");
+                    userService();
+                } else {
+                    waterInCoffeeMachine -= 250;
+                    coffeeBeanInCoffeeMachine -= 16;
+                    disposableCups -= 1;
+                    moneyInRegister += 4;
+                }
+                break;
+            case "2":
+                if (waterInCoffeeMachine < 350 || milkInCoffeeMachine < 75 || coffeeBeanInCoffeeMachine < 20
+                        || disposableCups < 1) {
+                    System.out.println("We are out of that coffee");
+                    userService();
+                } else {
+                    waterInCoffeeMachine -= 350;
+                    milkInCoffeeMachine -= 75;
+                    coffeeBeanInCoffeeMachine -= 20;
+                    disposableCups -= 1;
+                    moneyInRegister += 7;
+                }
+                break;
+            case "3":
+                if (waterInCoffeeMachine < 200 || milkInCoffeeMachine < 100 || coffeeBeanInCoffeeMachine < 12
+                        || disposableCups < 1) {
+                    System.out.println("We are out of that coffee");
+                    userService();
+                } else {
+                    waterInCoffeeMachine -= 200;
+                    milkInCoffeeMachine -= 100;
+                    coffeeBeanInCoffeeMachine -= 12;
+                    disposableCups -= 1;
+                    moneyInRegister += 6;
+                }
+                break;
+            default:
+                userService();
         }
+    }
 
+    static void fill() {
+        System.out.println("Write how many ml of water do you want to add:");
+        waterInCoffeeMachine += scan.nextInt();
+        System.out.println("Write how many ml of milk do you want to add:");
+        milkInCoffeeMachine += scan.nextInt();
+        System.out.println("Write how many grams of coffee beans do you want to add:");
+        coffeeBeanInCoffeeMachine += scan.nextInt();
+        System.out.println("Write how many disposable cups of coffee do you want to add:");
+        disposableCups += scan.nextInt();
+    }
+
+    static void userService() {
+        System.out.println("Write action (buy, fill, take, remaining, exit):");
+        String userServiceSelect = scan.next();
+
+        switch (userServiceSelect) {
+            case "buy":
+                System.out.print("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back:");
+                buy(scan.next());
+                break;
+
+            case "fill":
+                fill();
+                break;
+            case "take":
+                System.out.println("I gave you $" + moneyInRegister);
+                moneyInRegister -= moneyInRegister;
+                break;
+            case "remaining":
+                printResources();
+                break;
+            case "exit":
+                serviceInProgress = false;
+                break;
+            default:
+                userService();
+        }
+    }
+
+    public static void main(String[] args) {
+        while (serviceInProgress) {
+            System.out.println();
+            userService();
+        }
         scan.close();
     }
 }
